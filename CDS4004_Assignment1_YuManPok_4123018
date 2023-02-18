@@ -1,0 +1,192 @@
+<html lang="en">
+<!-- feel free to revise this file -->
+
+<head>
+<title> To-do List </title>
+	<style>	
+		/*write your css rules here*/
+		
+		textarea {
+		  width:100%;
+		}
+
+		li {
+			font-size: 30px;
+		}
+		
+    .strikeline {
+      text-decoration: line-through
+      }
+      
+     .hide {
+       display: none
+     }
+	</style>
+</head>
+
+<body>
+
+<p>
+<label> Task: </label>
+<input id='task' type='text' placeholder='Type a task here'>
+<label> Category: </label>
+<select id='category'>
+  <option value='1' style='color:red'> 1. More important </option>
+  <option value='2' selected style='color:black'> 2. Important </option>
+  <option value='3' style='color:grey'> 3. Less important </option>
+</select>
+<button id='btn_in'> Insert </button>
+</p>
+
+	<textarea id='text' rows="3" placeholder='Your input will be displayed here'></textarea> 
+	<br/>
+	<div class='divButton'>
+		<button id='btn_add'>Add to the list</button>
+		
+    
+	</div>
+<h1> My to-do list: </h1>
+<div id='empty' style='color:grey'> The current list is empty </div>
+	<ol id='order_list'>
+	</ol>
+  
+  <form id='form'>
+  <input id='btn_hide' type='checkbox'>
+  <label> Hide completed tasks (Toggle) </label>
+  <p>
+  <label> Send my to-do list to the following email address: </label> <br>
+  <input id='emailaddress' type='email'>
+  <input type='submit'>
+  </p>
+  </form>
+  
+</body>
+
+	<script>
+		// write your Javascript here
+
+    
+   document.getElementById('btn_in').addEventListener('click', test)
+    
+    addbutton = document.getElementById('btn_add')
+    toggle = document.getElementById('btn_hide')
+    list = document.getElementById('order_list')
+    form = document.getElementById('form')
+    emailaddress = document.getElementById('emailaddress')
+    verifynull()
+    
+    addbutton.addEventListener('click', addfunction)
+    toggle.addEventListener('click', togglefunction)
+    
+    list.addEventListener('dblclick', function(event){
+    if (confirm('Do you want to delete the following item?\n' + event.target.innerText) == true){
+    list.removeChild(event.target)
+    verifynull()
+    }
+    })
+    
+    list.addEventListener('click', function(event){
+    event.target.classList.toggle('strikeline')
+    })
+    
+    form.addEventListener('submit', function(event){
+    taskobjects = document.getElementsByTagName('li')
+    body = ''
+    i = 1
+    for (task of taskobjects){
+    body += i + '. ' + task.innerText + '%0D%0A'
+    i++
+   } 
+    window.location.href = 'mailto:' + emailaddress.value + '?subject=My to-do list' + '&body=This is my to-do list:%0D%0A' + body
+    event.preventDefault()
+    })
+    
+    function addfunction(){
+    input = document.getElementById('text')
+    if (input.value.trim() == ''){
+    //alert('empty')
+    }
+    else {
+    array1 = input.value.split(';')
+    taskcontent = []
+    taskcategory = []
+    
+    for (x of array1){
+    array2 = x.split(',')
+    taskcontent.push(array2[0])
+    taskcategory.push(array2[1])
+    }
+    
+    for (i = 0; i < array1.length; i++) {
+    item = document.createElement("li")
+    item.appendChild(document.createTextNode(taskcontent[i]))
+    if (taskcategory[i] == 1){
+    item.style.color = 'red'
+    } else if (taskcategory[i] == 2){
+    item.style.color = 'black'
+    } else{
+    item.style.color = 'grey'
+    }
+    list.appendChild(item)
+    }
+    verifynull()
+    input.value = ''
+    
+    //form = document.body.appendChild(document.createElement('form'))
+    //form.appendChild(document.createElement('label')).innerHTML = 'Send my to-do list to the following email address:'
+    //form.appendChild(document.createElement('br'))
+    //emailaddress = form.appendChild(document.createElement('input'))
+    //emailaddress.setAttribute('type','email')
+    //form.appendChild(document.createElement('input')).setAttribute('type','submit')
+    
+    //form.addEventListener('submit', function(event){
+    //taskobjects = document.getElementsByTagName('li')
+    //body = ''
+    //i = 1
+    //for (task of taskobjects){
+   // body += i + '. ' + task.innerText + '%0D%0A'
+    //i++
+   //} 
+    //window.location.href = 'mailto:' + emailaddress.value + '?subject=My to-do list' + '&body=This is my to-do list:%0D%0A' + body
+    //event.preventDefault()
+    //})
+    
+    }}
+    
+    
+    function togglefunction(){
+    completedtasks = document.getElementsByClassName('strikeline')
+    for (i = 0; i < completedtasks.length; i++) {
+    completedtasks[i].classList.toggle('hide')
+    }
+    }
+    
+    function verifynull(){
+    if (document.getElementsByTagName('li').length == 0){
+    document.getElementById('empty').style.display = ''
+    form.style.display = 'none'
+    }
+    else {
+    document.getElementById('empty').style.display = 'none'
+    form.style.display = ''
+    }}
+
+
+function test(){
+content = document.getElementById('task')
+category = document.getElementById('category')
+textarea = document.getElementById('text')
+
+if (content.value.trim() != ''){
+if (textarea.value.trim() == ''){
+textarea.value += content.value + ',' + category.options[category.selectedIndex].value
+}
+else {
+textarea.value += ';' + content.value + ',' + category.options[category.selectedIndex].value
+}}
+content.value = ''
+}
+
+	</script>
+</html>
+
